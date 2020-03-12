@@ -18,23 +18,23 @@ vector<int> KMP(string pattern, string text)
 	}
 	vector<int> positions;
 	int m = text.size();
-	for (int i = 0, j = 0;i < m;i++)
+	for (int i = 0, j = 0;i < m;i++) //移动主串
 	{
-		if (j < n && text[i] == pattern[j]) j++;  
+		if (j < n && text[i] == pattern[j]) j++;  //如果相同，移动模式串和主串
 		else
-		{
+		{//如果不同就移动到最大公共前后缀处
 			while (j > 0)
 			{
 				j = next[j];
 				if (text[i] == pattern[j])
-				{
+				{//移动到的位置和主串当前位置相同就从这里的下一位开始新一轮比较
 					j++;
 					break;
 				}
 			}
 		}
 		if (j == n)
-			positions.push_back(i - n + 1);
+			positions.push_back(i - j + 1); //下标
 	}
 	return positions;
 }
