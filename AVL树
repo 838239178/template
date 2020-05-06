@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct AVLNode *PtrToAVLNode;
+struct AVLNode{
+    int Data;
+    PtrToAVLNode Left;
+    PtrToAVLNode Right;
+    int Height;
+};
+typedef PtrToAVLNode AVLTree;
+
+AVLTree Insert ( int Key, AVLTree T );
+
+int Max(int a, int b) {
+    return a > b ? a : b;
+}
+int GetHeight(AVLTree A) {
+    if (A == NULL)
+        return 0;
+    return A->Height;
+}
+AVLTree LeftRotation(AVLTree T)
+{
+    AVLTree TR = T->Right;
+    T->Right = TR->Left;
+    TR->Left = T;
+    T->Height = Max(GetHeight(T->Left), GetHeight(T->Right)) + 1;
+    TR->Height = Max(GetHeight(T->Left), GetHeight(T->Right)) + 1;
+    return TR;
+}
+AVLTree RightRotation(AVLTree T)
+{
+    AVLTree TL = T->Left;
+    T->Left = TL->Right;
+    TL->Right = T;
+    T->Height = Max(GetHeight(T->Left), GetHeight(T->Right)) + 1;
+    TL->Height = Max(GetHeight(T->Left), GetHeight(T->Right)) + 1;
+    return TL;
+}
+AVLTree LeftRightRotation(AVLTree T)
+{
+    if(T->Left)
+        T->Left = LeftRotation(T->Left);
+    return RightRotation(T);
+}
+AVLTree RightLeftRotation(AVLTree T)
+{
+    if(T->Right) 
+        T->Right = RightRotation(T->Right);
+    return LeftRotation(T);
+}
+AVLTree Insert(int Key, AVLTree T)
+{
+    if (!T) {
+        T = (AVLTree)malloc(sizeof(struct AVLNode));
+        T->Data = Key;
+        T->Height = 1;
+        T->Left = T->Right = NULL;
+        return T;
+    }
+    if (T->Data > Key) {
+        T->Left = Insert(Key, T->Left);
+        if (GetHeight(T->Left) - GetHeight(T->Right) > 1) {
+            if (Key < T->Left->Data)
+                T = RightRotation(T);
+            else
+                T = LeftRightRotation(T);
+        }
+    }       
+    else if(T->Data < Key) {
+        T->Right = Insert(Key, T->Right);
+        if (GetHeight(T->Right) - GetHeight(T->Left) > 1) {
+            if (Key > T->Right->Data)
+                T = LeftRotation(T);
+            else
+                T = RightLeftRotation(T);
+        }
+    }
+    T->Height = Max(GetHeight(T->Left), GetHeight(T->Right))+1;
+    return T;
+}
