@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,7 +10,7 @@ namespace MyStructure
     }
 
     /// <summary>
-    /// 小则返回真
+    /// a小则返回真
     /// </summary>
     /// <typeparam name="T">实现IComparable的类</typeparam>
     public class Less<T> : myCompara<T> where T: IComparable
@@ -23,7 +23,7 @@ namespace MyStructure
     }
 
     /// <summary>
-    /// 大则返回真
+    /// a大则返回真
     /// </summary>
     /// <typeparam name="T">实现IComparable的类</typeparam>
     public class Greater<T> : myCompara<T> where T : IComparable 
@@ -39,9 +39,9 @@ namespace MyStructure
     /// <summary>
     /// 优先队列
     /// </summary>
-    /// <typeparam name="T">实现IComparable的类</typeparam>
+    /// <typeparam name="T">队列内容的类</typeparam>
     /// <typeparam name="U">规定大、小优先的类</typeparam>
-    public class PriorityQueue<T,U> where T: IComparable, new() where U: myCompara<T>, new()
+    public class PriorityQueue<T,U> where U: myCompara<T>, new()
     {
         const int TOPINDEX = 1;
 
@@ -57,10 +57,11 @@ namespace MyStructure
         /// <summary>
         /// 将ts中的数据构造成优先队列
         /// </summary>
-        /// <param name="ts">ts[0]必须为无关参数defaut(T)</param>
+        /// <param name="ts">原始数据</param>
         public PriorityQueue(List<T> ts)
         {
             heap = ts;
+            heap.Insert(0, default(T));
             for(int i = (heap.Count-1)/2; i>=1; i--)
             {
                 _adjustDown(i);
@@ -125,7 +126,7 @@ namespace MyStructure
             {
                 child = i * 2;
 
-                if(child+1 < heap.Count && heap[child].CompareTo(heap[child+1]) < 0)
+                if(child+1 < heap.Count && compare.Compare(heap[child+1], heap[child]))
                 {
                     child++;
                 }
